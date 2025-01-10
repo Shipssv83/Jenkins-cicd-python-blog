@@ -1,0 +1,28 @@
+---
+- name: puppet deploy server prod
+  become: true
+  hosts: all
+  vars:
+    PUPPET_PATH: "/etc/puppetlabs/code/environments"
+
+  tasks:
+
+  - name: copy files to prod remote server
+    copy:
+      src: "../puppet_code.zip"
+      dest: "{{ PUPPET_PATH }}/office"
+      mode: 0755
+      owner: root
+      group: root
+
+  - name: unzip on office remote
+    unarchive:
+      src: "{{ PUPPET_PATH }}/office/puppet_code.zip"
+      dest: "{{ PUPPET_PATH }}/office"
+      remote_src: yes
+      mode: 0755
+      owner: root
+      group: root
+
+  - name: remove office archive
+    command: rm -f "{{ PUPPET_PATH }}/office"/puppet_code.zip
